@@ -4,7 +4,7 @@ provider "proxmox" {
  pm_password  = "florida1"
  pm_tls_insecure = true
 }
-
+ 
 
 
 resource "proxmox_vm_qemu" "my_vm" {

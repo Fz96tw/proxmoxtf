@@ -8,8 +8,8 @@ provider "proxmox" {
 
 
 resource "proxmox_vm_qemu" "my_vm" {
- name       = "ubuntu-test1"
- agent = 1
+ name       = "ubuntu-test2"
+ agent = 0
  target_node = "pve"
  clone      = "ubuntu-24.04-server-amd64-template"
  full_clone = "true"
@@ -20,15 +20,32 @@ resource "proxmox_vm_qemu" "my_vm" {
  scsihw = "virtio-scsi-pci"
  bootdisk = "scsi0"
 
-disk {
-    slot     = 0
-    size     = "5G"
-    type     = "scsi"
-    storage  = "local-lvm"
-    # Enables thin-provisioning
-    discard = "on"
-    #iothread = 1
+disks {
+scsi {
+    scsi0{
+        disk{
+           # slot     = 0
+            size     = "32"
+           # type     = "scsi"
+            storage  = "local-lvm"
+            # Enables thin-provisioning
+            #discard = "on"
+            #iothread = 1
+        }
+    }
+    scsi1{
+        disk{
+           # slot     = 0
+            size     = "5"
+           # type     = "scsi"
+            storage  = "local-lvm"
+            # Enables thin-provisioning
+            #discard = "on"
+            #iothread = 1
+        }
+    }
   }
+}
 
   network {
     model     = "virtio"
@@ -39,5 +56,6 @@ disk {
   }
 
 
+#   boot = "order=scsi0"
 }
 

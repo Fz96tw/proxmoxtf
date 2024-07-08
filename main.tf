@@ -9,11 +9,12 @@ provider "proxmox" {
 resource "proxmox_vm_qemu" "win2k19-vm" {
   ## Wait for the cloud-config file to exist
 
-  name        = "Danube"
+  name        = "Amazon"
   target_node = "pve2"
 
+  qemu_os = "win10"
   # Clone from cloudinit template
-  clone      = "danube-w2k19"
+  clone      = "w2k19-template"
   full_clone = true
   #os_type = "cloud-init"
 
@@ -24,8 +25,8 @@ resource "proxmox_vm_qemu" "win2k19-vm" {
     memory = 4096
 
     scsihw = "virtio-scsi-pci"
-    bootdisk = "scsi0"
-    boot = "order=scsi0"
+    bootdisk = "ide0"
+    boot = "order=ide0"
 
 #  disk {
 #    size    = "80G"
@@ -35,9 +36,9 @@ resource "proxmox_vm_qemu" "win2k19-vm" {
 
 
     disks {
-        scsi {
+        ide {
             # this will just map to the boot disk in vm template
-            scsi0{
+            ide0{
                 disk{
                 # slot     = 0
                     size     = "32" # size must match the disk in template
@@ -54,7 +55,7 @@ resource "proxmox_vm_qemu" "win2k19-vm" {
 
   # Set the network
   network {
-    model  = "virtio"
+    model  = "e1000"
     bridge = "vmbr0"
   }
 }
@@ -67,6 +68,7 @@ resource "proxmox_vm_qemu" "virtual_machine" {
  clone      = "ubuntu-24.04-srv-amd64"
  full_clone = "true"
  #storage    = "local-lvm"
+ qemu_os = "l26"
  cores      = 1
  sockets = 1
  memory     = 2048

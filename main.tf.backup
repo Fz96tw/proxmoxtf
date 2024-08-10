@@ -15,19 +15,18 @@ resource "proxmox_vm_qemu" "win2k19-vm" {
   qemu_os = "win10"
   # Clone from cloudinit template
   clone      = "win2k19-cloudinit"
-  full_clone = false
+  full_clone = true
   #os_type = "cloud-init"
 
 
-    ipconfig0 = "ip=dhcp"
     agent = 1
     cores      = 1
     sockets = 1
-    memory = 2048
+    memory = 4096
 
     scsihw = "virtio-scsi-pci"
-    bootdisk = "virtio0"
-    boot = "order=virtio0"
+    bootdisk = "ide0"
+    boot = "order=ide0"
 
 #  disk {
 #    size    = "80G"
@@ -37,76 +36,9 @@ resource "proxmox_vm_qemu" "win2k19-vm" {
 
 
     disks {
-        virtio {
+        ide {
             # this will just map to the boot disk in vm template
-            virtio0{
-                disk{
-                # slot     = 0
-                    size     = "32" # size must match the disk in template
-                # type     = "scsi"
-                    storage  = "local-lvm"
-                    # Enables thin-provisioning
-                    #discard = "on"
-                    #iothread = true
-                }
-            }
-            virtio1{
-                disk{
-                # slot     = 0
-                    size     = "1" # size must match the disk in template
-                # type     = "scsi"
-                    storage  = "local-lvm"
-                    # Enables thin-provisioning
-                    #discard = "on"
-                    #iothread = 1
-                }
-            }
-        }
-    }
-
-
-  # Set the network
-  network {
-    model  = "e1000"
-    bridge = "vmbr0"
-  }
-}
-
-
-resource "proxmox_vm_qemu" "win2k19-vm-2" {
-  ## Wait for the cloud-config file to exist
-
-  name        = "indus"
-  target_node = "pve2"
-
-  qemu_os = "win10"
-  # Clone from cloudinit template
-  clone      = "win2k19-cloudinit"
-  full_clone = false
-  #os_type = "cloud-init"
-
-
-    ipconfig0 = "ip=dhcp"
-    agent = 1
-    cores      = 1
-    sockets = 1
-    memory = 2048
-
-    scsihw = "virtio-scsi-pci"
-    bootdisk = "virtio0"
-    boot = "order=virtio0"
-
-#  disk {
-#    size    = "80G"
-#    type    = "sata"
-#    storage = "DefaultPool"
-#  }
-
-
-    disks {
-        virtio {
-            # this will just map to the boot disk in vm template
-            virtio0{
+            ide0{
                 disk{
                 # slot     = 0
                     size     = "32" # size must match the disk in template
@@ -114,10 +46,10 @@ resource "proxmox_vm_qemu" "win2k19-vm-2" {
                     storage  = "vg_local-lvm2"
                     # Enables thin-provisioning
                     #discard = "on"
-                    #iothread = true
+                    #iothread = 1
                 }
             }
-            virtio1{
+            ide1{
                 disk{
                 # slot     = 0
                     size     = "1" # size must match the disk in template
@@ -138,6 +70,7 @@ resource "proxmox_vm_qemu" "win2k19-vm-2" {
     bridge = "vmbr0"
   }
 }
+
 
 resource "proxmox_vm_qemu" "virtual_machine" {
  name       = "Orinoco"
@@ -191,5 +124,6 @@ disks {
     firewall  = false
     link_down = false
   }
+
 }
 

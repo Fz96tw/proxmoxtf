@@ -1,7 +1,7 @@
 provider "proxmox" {
  pm_api_url   = "https://192.168.1.171:8006/api2/json"
  pm_user      = "root@pam"
- pm_password  = "florida1"
+ pm_password  = ""
  pm_tls_insecure = true
 }
  
